@@ -2,7 +2,10 @@
 #define DEBUG_H_
 
 #include "Arduino.h"
-#include <WiFi.h>
+
+//SHOULD BE FROM ESPHOME
+//#include <WiFi.h>
+
 #include "site_details.h"
 
 void debugMsgLn(String part);
