@@ -12,24 +12,32 @@
 
 #include "Arduino.h"
 //#include <avr/pgmspace.h>
-#include <ESP32Time.h>
-#include "time.h"
+
+// TIME IS INCLUDED ESPHOME
+// #include <ESP32Time.h>
+// #include "time.h"
+
+// defunct setting
 //#include <NanodeMAC.h>
+
 #include "bluetooth.h"
 #include "SMANetArduino.h"
 
-#include <WiFi.h>
-#include <WiFiClient.h>
-#include <WebServer.h>
-#include <Update.h>
+//SHOULD BE FROM ESPHOME
+// #include <WiFi.h>
+// #include <WiFiClient.h>
+// #include <WebServer.h>
+// #include <Update.h>
+
 #include "site_details.h"
 #include "debug.h"
 
 #include "EspMQTTClient.h"
 
+// TIME IS ALREADY IN ESPHOME
 // A time in Unix Epoch that is "now" - used to check that the NTP server has
 // sync'd the time correctly before updating the inverter
-#define AFTER_NOW 1630152740
+// #define AFTER_NOW 1630152740
 
 EspMQTTClient client(
     SSID,
@@ -39,8 +47,9 @@ EspMQTTClient client(
     "", // Can be omitted if not needed
     HOST);
 
-ESP32Time ESP32rtc;     // Time structure. Holds what time the ESP32 thinks it is.
-ESP32Time nextMidnight; // Create a time structure to hold the answer to "What time (in time_t seconds) is the upcoming midnight?"
+// SHOULD BE FROM ESPHOME
+//ESP32Time ESP32rtc;     // Time structure. Holds what time the ESP32 thinks it is.
+//ESP32Time nextMidnight; // Create a time structure to hold the answer to "What time (in time_t seconds) is the upcoming midnight?"
 
 //BST Start and end dates - this needs moving into some sort of PROGMEM array for the years or calculated based on the BST logic see
 //http://www.time.org.uk/bstgmtcodepage1.aspx
@@ -53,7 +62,7 @@ ESP32Time nextMidnight; // Create a time structure to hold the answer to "What t
 //    0=UTC (London)
 //19800=5.5hours Chennai, Kolkata
 //36000=Brisbane (UTC+10hrs)
-#define timeZoneOffset (long)(60 * 60 * TIME_ZONE)
+//#define timeZoneOffset (long)(60 * 60 * TIME_ZONE)
 
 #define NaN_S32 (int32_t)0x80000000  // "Not a Number" representation for LONG (converted to 0 by SBFspot)
 #define NaN_U32 (uint32_t)0xFFFFFFFF // "Not a Number" representation for ULONG (converted to 0 by SBFspot)
@@ -260,8 +269,9 @@ void setup()
   pinMode(LED_BUILTIN, OUTPUT);
   debugSetup();
 
-  Serial.begin(115200);                      //Serial port for debugging output
-  ESP32rtc.setTime(30, 24, 15, 17, 1, 2021); // 17th Jan 2021 15:24:30  // Need this to be accurate. Since connecting to the internet anyway, use NTP.
+ //SHOULD BE FROM ESPHOME
+  //Serial.begin(115200);                      //Serial port for debugging output
+  //ESP32rtc.setTime(30, 24, 15, 17, 1, 2021); // 17th Jan 2021 15:24:30  // Need this to be accurate. Since connecting to the internet anyway, use NTP.
 
   // Connect to WiFi network
   // WiFi.begin(SSID, PASSWORD);
@@ -289,7 +299,7 @@ void setup()
   // Serial.println(WiFi.localIP());
 
   // Always set time to GMT timezone
-  configTime(timeZoneOffset, 0, NTP_SERVER);
+  //configTime(timeZoneOffset, 0, NTP_SERVER);
 
   // setupOTAServer();
 }
@@ -507,43 +517,44 @@ void loop()
     //add 1 hour to readings if its summer
     // DRH Temp removal of: if ((datetime>=SummerStart) && (datetime<=SummerEnd)) datetime+=60*60;
 
-#ifdef allowsleep
-    if ((ESP32rtc.getEpoch() > (datetime + 3600)) && (spotpowerac == 0))
-    {
-      //Inverter output hasnt changed for an hour, so put Nanode to sleep till the morning
-      //debugMsgln("Bed time");
-
-      //sleeping=true;
-
-      //Get midnight on the day of last solar generation
-      // First, create a time structure to hold the answer to "At what time (in time_t seconds) is the upcoming midnight?"
-      tmElements_t tm;
-      tm.Year = year(datetime) - 1970;
-      tm.Month = month(datetime);
-      tm.Day = day(datetime);
-      tm.Hour = 23;
-      tm.Hour = hour(datetime);
-      tm.Minute = 59;
-      tm.Second = 59;
-      time_t midnight = makeTime(tm);
-
-      //Move to midnight
-      //debugMsg("Midnight ");digitalClockDisplay( midnight );debugMsgln("");
-
-      if (ESP32rtc.getEpoch() < midnight)
-      {
-        //Time to calculate SLEEP time, we only do this if its BEFORE midnight
-        //on the day of solar generation, otherwise we might wake up and go back to sleep immediately!
-
-        //Workout what time sunrise is and sleep till then...
-        //longitude, latitude (london uk=-0.126236,51.500152)
-        unsigned int minutespastmidnight = ComputeSun(mylongitude, mylatitude, datetime, true);
-
-        //We want to wake up at least 15 minutes before sunrise, just in case...
-        checktime = midnight + minutespastmidnight - 15 * 60;
-      }
-    }
-#endif
+//SHOULD BE FROM ESPHOME   
+//#ifdef allowsleep
+//    if ((ESP32rtc.getEpoch() > (datetime + 3600)) && (spotpowerac == 0))
+//    {
+//      //Inverter output hasnt changed for an hour, so put Nanode to sleep till the morning
+//      //debugMsgln("Bed time");
+//
+//      //sleeping=true;
+//
+//      //Get midnight on the day of last solar generation
+//      // First, create a time structure to hold the answer to "At what time (in time_t seconds) is the upcoming midnight?"
+//      tmElements_t tm;
+//      tm.Year = year(datetime) - 1970;
+//      tm.Month = month(datetime);
+//      tm.Day = day(datetime);
+//      tm.Hour = 23;
+//      tm.Hour = hour(datetime);
+//      tm.Minute = 59;
+//      tm.Second = 59;
+//     time_t midnight = makeTime(tm);
+//
+//     //Move to midnight
+//      //debugMsg("Midnight ");digitalClockDisplay( midnight );debugMsgln("");
+//
+//      if (ESP32rtc.getEpoch() < midnight)
+//      {
+//        //Time to calculate SLEEP time, we only do this if its BEFORE midnight
+//        //on the day of solar generation, otherwise we might wake up and go back to sleep immediately!
+//
+//        //Workout what time sunrise is and sleep till then...
+//        //longitude, latitude (london uk=-0.126236,51.500152)
+//        unsigned int minutespastmidnight = ComputeSun(mylongitude, mylatitude, datetime, true);
+//
+//        //We want to wake up at least 15 minutes before sunrise, just in case...
+//        checktime = midnight + minutespastmidnight - 15 * 60;
+//      }
+//    }
+//#endif
 
     //debugMsg("Wait for ");
     //digitalClockDisplay( checktime );
