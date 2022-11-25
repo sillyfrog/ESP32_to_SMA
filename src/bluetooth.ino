@@ -5,8 +5,7 @@
 
 //#include <SoftwareSerial.h>
 #include "Arduino.h"
-//SHOULD BE FROM ESPHOME
-//#include <Time.h>
+#include <Time.h>
 #include "BluetoothSerial.h"
 #include <EEPROM.h>
 #include <esp_bt_device.h> // ESP32 BLE
